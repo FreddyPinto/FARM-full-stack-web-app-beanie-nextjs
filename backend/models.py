@@ -1,5 +1,4 @@
 from datetime import datetime
-from os import name
 from typing import List, Optional
 from beanie import Document, Link, PydanticObjectId
 from pydantic import BaseModel, Field
@@ -41,7 +40,7 @@ class CurrentUser(BaseModel):
     email: str
 
 
-class Car(Document):
+class Car(Document, extra="allow"):
     brand: str
     make: str
     year: int
@@ -51,11 +50,23 @@ class Car(Document):
     picture_url: Optional[str] = None
     pros: List[str] = []
     cons: List[str] = []
-    created_at: datetime = Field(default_factory=datetime.now)
-    owner: Link[User] = None
+    date: datetime = datetime.now()
+    user: Link[User] = None
 
     class Settings:
         name = "car"
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "brand": "BMW",
+                "make": "X5",
+                "year": 2021,
+                "cm3": 3000,
+                "price": 100000,
+            }
+        }
+
 
 class UpdateCar(BaseModel):
     brand: Optional[str] = None
