@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.responses import JSONResponse
-from authentication import AuthHandler
-from models import CurrentUser, LoginUser, RegisterUser, User
+from app.core.authentication import AuthHandler
+from app.models import CurrentUser, LoginUser, RegisterUser, User
 
 auth_handler = AuthHandler()
 router = APIRouter()
@@ -10,7 +10,7 @@ router = APIRouter()
 @router.post(
     "/register", response_description="Register user", response_model=CurrentUser
 )
-async def register(newUser: RegisterUser = Body(...), response_model=User):
+async def register(newUser: RegisterUser = Body(...)):
     newUser.pasword = auth_handler.get_password_hash(newUser.password)
     query = {"$or": [{"email": newUser.email}, {"username": newUser.username}]}
     existing_user = await User.find_one(query)

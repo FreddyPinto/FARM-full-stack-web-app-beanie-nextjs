@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class BaseConfig(BaseSettings):
+    API_V1_STR: str = "/api/v1"
     DB_URL: Optional[str]
     CLOUDINARY_SECRET_KEY: Optional[str]
     CLOUDINARY_API_KEY: Optional[str]

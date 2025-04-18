@@ -1,7 +1,7 @@
 import motor.motor_asyncio
 from beanie import init_beanie
-from config import BaseConfig
-from models import Car, User
+from app.core.config import BaseConfig
+from app.models import Car, User
 
 
 settings = BaseConfig()
