@@ -6,8 +6,8 @@ from pydantic import BaseModel, Field
 
 class User(Document):
     username: str = Field(min_length=3, max_length=50)
-    password: str = Field(min_length=6, max_length=22)
-    email: str = Field(min_length=6, max_length=50)
+    password: str
+    email: str
     created_at: datetime = Field(default_factory=datetime.now)
 
     class settings:
