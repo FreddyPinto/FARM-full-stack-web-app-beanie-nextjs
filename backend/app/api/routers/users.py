@@ -11,7 +11,7 @@ router = APIRouter()
     "/register", response_description="Register user", response_model=CurrentUser
 )
 async def register(newUser: RegisterUser = Body(...)):
-    newUser.pasword = auth_handler.get_password_hash(newUser.password)
+    newUser.password = auth_handler.get_password_hash(newUser.password)
     query = {"$or": [{"email": newUser.email}, {"username": newUser.username}]}
     existing_user = await User.find_one(query)
     if existing_user is not None:
