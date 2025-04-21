@@ -48,7 +48,7 @@ async def create_car(
     # description: str = Form(...),
     # pros: List[str] = Form(...),
     # cons: List[str] = Form(...),
-    picture_url: UploadFile = File("picture"),
+    picture: UploadFile = File("picture"),
     user_data=Depends(auth_handler.auth_wrapper),
 ):
     user_id = user_data["user_id"]
@@ -57,7 +57,9 @@ async def create_car(
         raise HTTPException(status_code=404, detail="User not found")
 
     # Upload the image to Cloudinary
-    upload_result = uploader.upload(picture_url.file, resource_type="image")
+    upload_result = uploader.upload(
+        picture.file, folder="FARM2", crop="fill", width=800, height=600, gravity="auto"
+    )
     picture_url = upload_result["url"]
 
     car = Car(
