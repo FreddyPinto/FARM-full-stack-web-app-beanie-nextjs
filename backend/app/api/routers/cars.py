@@ -2,10 +2,20 @@ import cloudinary
 from typing import List
 from beanie import PydanticObjectId, WriteRules
 from cloudinary import uploader
-from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, File, status
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    Form,
+    File,
+    HTTPException,
+    UploadFile,
+    status,
+)
 from app.models import Car, UpdateCar, User
 from app.core.authentication import AuthHandler
 from app.core.config import BaseConfig
+from app.core.background import create_description
 
 auth_handler = AuthHandler()
 router = APIRouter()
@@ -39,15 +49,13 @@ async def get_car(car_id: PydanticObjectId):
     status_code=status.HTTP_201_CREATED,
 )
 async def create_car(
+    background_tasks: BackgroundTasks,
     brand: str = Form("brand"),
     make: str = Form("make"),
     year: int = Form("year"),
     cm3: int = Form("cm3"),
     km: int = Form("km"),
     price: float = Form("price"),
-    # description: str = Form(...),
-    # pros: List[str] = Form(...),
-    # cons: List[str] = Form(...),
     picture: UploadFile = File("picture"),
     user_data=Depends(auth_handler.auth_wrapper),
 ):
@@ -58,7 +66,7 @@ async def create_car(
 
     # Upload the image to Cloudinary
     upload_result = uploader.upload(
-        picture.file, folder="FARM2", crop="fill", width=800, height=600, gravity="auto"
+        picture.file, folder="FARM", crop="fill", width=800, height=600, gravity="auto"
     )
     picture_url = upload_result["url"]
 
@@ -69,11 +77,12 @@ async def create_car(
         cm3=cm3,
         price=price,
         km=km,
-        # description=description,
-        # pros=pros,
-        # cons=cons,
         picture_url=picture_url,
         user=user,
+    )
+
+    background_tasks.add_task(
+        create_description, brand=brand, make=make, year=year, picture_url=picture_url
     )
 
     await car.insert(link_rule=WriteRules.WRITE)
