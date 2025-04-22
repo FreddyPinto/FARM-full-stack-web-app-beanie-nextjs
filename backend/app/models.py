@@ -48,8 +48,8 @@ class Car(Document, extra="allow"):
     price: float
     description: Optional[str] = None
     picture_url: Optional[str] = None
-    pros: List[str] = []
-    cons: List[str] = []
+    pros: List[str] = Field(default_factory=list)
+    cons: List[str] = Field(default_factory=list)
     date: datetime = datetime.now()
     user: Link[User] = None
 
@@ -76,5 +76,5 @@ class UpdateCar(BaseModel):
     price: Optional[float] = None
     description: Optional[str] = None
     picture_url: Optional[str] = None
-    pros: Optional[List[str]] = []
-    cons: Optional[List[str]] = []
+    pros: Optional[List[str]] = Field(default_factory=list)
+    cons: Optional[List[str]] = Field(default_factory=list)
