@@ -6,8 +6,8 @@ import resend
 from google import genai
 from google.genai import types
 
-from config import BaseConfig
-from models import Car
+from app.core.config import BaseConfig
+from app.models import Car
 
 settings = BaseConfig()
 
@@ -40,7 +40,7 @@ async def create_description(brand, make, year, picture_url):
         response = client.models.generate_content(
             model="gemini-2.0-flash",
             contents=[{prompt}],
-            pconfig=types.GenerateContentConfig(
+            config=types.GenerateContentConfig(
                 max_output_tokens=500,
                 temperature=0.2
                 )
@@ -76,7 +76,7 @@ async def create_description(brand, make, year, picture_url):
 
         params: resend.Emails.SendParams = {
             "from": "FARM Cars  <onboarding@resend.dev>",
-            "to": ["aleksendric@gmail.com"],
+            "to": ["freddypinto@outlook.com"],
             "subject": "New car on sale!",
             "html": generate_email(),
         }
