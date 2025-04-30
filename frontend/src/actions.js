@@ -6,7 +6,7 @@ import { sessionOptions } from "./lib";
 import { redirect } from "next/navigation";
 
 export const getSession = async () => {
-  const session = await getIronSession(cookies(), sessionOptions);
+  const session = await getIronSession(await cookies(), sessionOptions);
 
   return session;
 };
